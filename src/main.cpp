@@ -1,8 +1,7 @@
 //: Main.cpp
 #include "include/Game.h"
 
-int main(int argc, char *argv[])
-{
+int main(int argc, char *argv[]) {
   // class for drawing staff, it uses SDL for the rendering. Change the methods
   // of this class in order to use a different renderer
   IO mIO;
@@ -22,8 +21,7 @@ int main(int argc, char *argv[])
 
   // ----- Main Loop -----
 
-  while (!mIO.IsKeyDown(SDLK_ESCAPE))
-  {
+  while (!mIO.IsKeyDown(SDLK_ESCAPE)) {
     // ----- Draw -----
 
     mIO.ClearScreen();  // Clear screen
@@ -34,55 +32,56 @@ int main(int argc, char *argv[])
 
     int mKey = mIO.PollKey();
 
-    switch (mKey)
-    {
-    case (SDLK_l):
-    {
-      if (mBoard.IsPossibleMovement(mGame.mPosX + 1, mGame.mPosY, mGame.mPiece, mGame.mRotation))
+    switch (mKey) {
+    case (SDLK_l): {
+      if (mBoard.IsPossibleMovement(mGame.mPosX + 1, mGame.mPosY, mGame.mPiece,
+                                    mGame.mRotation))
         mGame.mPosX++;
       break;
     }
 
-    case (SDLK_h):
-    {
-      if (mBoard.IsPossibleMovement(mGame.mPosX - 1, mGame.mPosY, mGame.mPiece, mGame.mRotation))
+    case (SDLK_h): {
+      if (mBoard.IsPossibleMovement(mGame.mPosX - 1, mGame.mPosY, mGame.mPiece,
+                                    mGame.mRotation))
         mGame.mPosX--;
       break;
     }
 
-    case (SDLK_j):
-    {
-      if (mBoard.IsPossibleMovement(mGame.mPosX, mGame.mPosY + 1, mGame.mPiece, mGame.mRotation))
+    case (SDLK_j): {
+      if (mBoard.IsPossibleMovement(mGame.mPosX, mGame.mPosY + 1, mGame.mPiece,
+                                    mGame.mRotation))
         mGame.mPosY++;
       break;
     }
 
-    case (SDLK_x):
-    {
+    case (SDLK_x): {
       // Check collision from up to down
-      while (mBoard.IsPossibleMovement(mGame.mPosX, mGame.mPosY, mGame.mPiece, mGame.mRotation))
-      {
+      while (mBoard.IsPossibleMovement(mGame.mPosX, mGame.mPosY, mGame.mPiece,
+                                       mGame.mRotation)) {
         mGame.mPosY++;
       }
 
-      mBoard.StorePieces(mGame.mPosX, mGame.mPosY - 1, mGame.mPiece, mGame.mRotation);
+      mBoard.StorePieces(mGame.mPosX, mGame.mPosY - 1, mGame.mPiece,
+                         mGame.mRotation);
 
       mBoard.DeletePossibleLines();
 
-      if (mBoard.IsGameOver())
-      {
+      if (mBoard.IsGameOver()) {
         mIO.Getkey();
         exit(0);
       }
 
       mGame.CreateNewPiece();
 
+      // score
+      mGame.incrementScore();
+
       break;
     }
 
-    case (SDLK_z):
-    {
-      if (mBoard.IsPossibleMovement(mGame.mPosX, mGame.mPosY, mGame.mPiece, (mGame.mRotation + 1) % 4))
+    case (SDLK_z): {
+      if (mBoard.IsPossibleMovement(mGame.mPosX, mGame.mPosY, mGame.mPiece,
+                                    (mGame.mRotation + 1) % 4))
         mGame.mRotation = (mGame.mRotation + 1) % 4;
 
       break;
@@ -93,25 +92,25 @@ int main(int argc, char *argv[])
 
     unsigned long mTime2 = SDL_GetTicks();
 
-    if ((mTime2 - mTime1) > WAIT_TIME)
-    {
-      if (mBoard.IsPossibleMovement(mGame.mPosX, mGame.mPosY + 1, mGame.mPiece, mGame.mRotation))
-      {
+    if ((mTime2 - mTime1) > WAIT_TIME) {
+      if (mBoard.IsPossibleMovement(mGame.mPosX, mGame.mPosY + 1, mGame.mPiece,
+                                    mGame.mRotation)) {
         mGame.mPosY++;
-      }
-      else
-      {
-        mBoard.StorePieces(mGame.mPosX, mGame.mPosY, mGame.mPiece, mGame.mRotation);
+      } else {
+        mBoard.StorePieces(mGame.mPosX, mGame.mPosY, mGame.mPiece,
+                           mGame.mRotation);
 
         mBoard.DeletePossibleLines();
 
-        if (mBoard.IsGameOver())
-        {
+        if (mBoard.IsGameOver()) {
           mIO.Getkey();
           exit(0);
         }
 
         mGame.CreateNewPiece();
+
+        // score
+        mGame.incrementScore();
       }
 
       mTime1 = SDL_GetTicks();

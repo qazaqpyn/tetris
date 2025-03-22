@@ -1,14 +1,17 @@
 //: Game.cpp
 #include "include/Game.h"
 #include "include/Board.h"
+#include "include/IO.h"
 #include <cstdlib>
+#include <string>
 
 /*
 ======================================
 Init
 ======================================
 */
-Game::Game(Board *pBoard, Pieces *pPieces, IO *pIO, int pScreenHeight) {
+Game::Game(Board *pBoard, Pieces *pPieces, IO *pIO, int pScreenHeight)
+{
   mScreenHeight = pScreenHeight;
 
   // Get the pointer to the Board and Pieces classes
@@ -19,6 +22,14 @@ Game::Game(Board *pBoard, Pieces *pPieces, IO *pIO, int pScreenHeight) {
   // Game initialization
   InitGame();
 }
+
+/*
+ ===================================
+  Score specific logic func
+ ===================================
+ */
+void Game::incrementScore() { score++; }
+int Game::getScore() { return score; }
 
 /*
 ======================================
@@ -36,9 +47,13 @@ int Game::GetRand(int pA, int pB) { return rand() % (pB - pA + 1) + pA; }
 Initial parameters of the game
 ======================================
 */
-void Game::InitGame() {
+void Game::InitGame()
+{
   // Init random numbers
   srand((unsigned int)time(NULL));
+
+  // reset score
+  score = 0;
 
   // First piece
   mPiece = GetRand(0, 6);
@@ -58,7 +73,8 @@ void Game::InitGame() {
 Create a random piece
 ======================================
 */
-void Game::CreateNewPiece() {
+void Game::CreateNewPiece()
+{
   // The new piece
   mPiece = mNextPiece;
   mRotation = mNextRotation;
@@ -81,7 +97,8 @@ void Game::CreateNewPiece() {
   >> pRotation 1 of 4 possible rotations
  ======================================
 */
-void Game::DrawPiece(int pX, int pY, int pPiece, int pRotation) {
+void Game::DrawPiece(int pX, int pY, int pPiece, int pRotation)
+{
   color mColor; // Color of the block
 
   // Obtain the position in pixel in the screen of the block we want to draw
@@ -90,10 +107,13 @@ void Game::DrawPiece(int pX, int pY, int pPiece, int pRotation) {
 
   // Travel the matrix of blocks of the piece and draw the blocks that are
   // filled
-  for (int i = 0; i < PIECES_BLOCKS; i++) {
-    for (int j = 0; j < PIECES_BLOCKS; j++) {
+  for (int i = 0; i < PIECES_BLOCKS; i++)
+  {
+    for (int j = 0; j < PIECES_BLOCKS; j++)
+    {
       // Get the type of the block and draw it with the correct color
-      switch (mPieces->GetBlockType(pPiece, pRotation, j, i)) {
+      switch (mPieces->GetBlockType(pPiece, pRotation, j, i))
+      {
       case 1:
         mColor = GREEN;
         break; // For each block of the piece except the pivot
@@ -118,7 +138,8 @@ void Game::DrawPiece(int pX, int pY, int pPiece, int pRotation) {
   draw the two lines that delimit the board
  ==================================
 */
-void Game::DrawBoard() {
+void Game::DrawBoard()
+{
   // Calculate the limits of the board in pixels
   int mX1 = BOARD_POSITION - (BLOCK_SIZE * (BOARD_WIDTH / 2)) - 1;
   int mX2 = BOARD_POSITION + (BLOCK_SIZE * (BOARD_WIDTH / 2));
@@ -136,8 +157,10 @@ void Game::DrawBoard() {
 
   // Drawing the blocks that are already stored in the board
   mX1 += 1;
-  for (int i = 0; i < BOARD_WIDTH; i++) {
-    for (int j = 0; j < BOARD_HEIGHT; j++) {
+  for (int i = 0; i < BOARD_WIDTH; i++)
+  {
+    for (int j = 0; j < BOARD_HEIGHT; j++)
+    {
       // Check if the block is filled, if so, draw it
       if (!mBoard->IsFreeBlock(i, j))
         mIO->DrawRectangle(mX1 + i * BLOCK_SIZE, mY + j * BLOCK_SIZE,
@@ -145,6 +168,8 @@ void Game::DrawBoard() {
                            (mY + j * BLOCK_SIZE) + BLOCK_SIZE - 1, RED);
     }
   }
+
+  mIO->DrawScore(score);
 }
 
 /*
@@ -153,8 +178,9 @@ void Game::DrawBoard() {
   draw all the objects of the scene
  =======================================
 */
-void Game::DrawScene() {
-  DrawBoard(); // draw the delimitation lines and blocks stored in the board
+void Game::DrawScene()
+{
+  DrawBoard();                                // draw the delimitation lines and blocks stored in the board
   DrawPiece(mPosX, mPosY, mPiece, mRotation); // draw playing piece
   DrawPiece(mNextPosX, mNextPosY, mNextPiece,
             mNextRotation); // draw the next piece

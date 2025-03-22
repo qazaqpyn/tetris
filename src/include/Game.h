@@ -2,18 +2,18 @@
 #ifndef __GAME__
 #define __GAME__
 
-#include "IO.h"
 #include "Board.h"
+#include "IO.h"
 #include "Pieces.h"
 #include <time.h>
 
 #define WAIT_TIME 700
 
-class Game
-{
+class Game {
   int mScreenHeight;
   int mNextPosX, mNextPosY;
   int mNextPiece, mNextRotation;
+  int score;
 
   Board *mBoard;
   Pieces *mPieces;
@@ -29,6 +29,8 @@ public:
 
   void DrawScene();
   void CreateNewPiece();
+  void incrementScore();
+  int getScore();
 
   int mPosX, mPosY;      // Position of the piece that is falling down
   int mPiece, mRotation; // kind and rotation the piece is falling down

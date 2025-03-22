@@ -30,9 +30,12 @@ public:
   int Getkey();
   int IsKeyDown(int pKey);
   void UpdateScreen();
+  void DrawText(const char *text, int pX1, int pY1, int pX2, int pY2, enum color pC);
+  void DrawScore(int score);
 
 private:
   static SDL_Window *window;
   static SDL_Renderer *renderer;
+  void DrawDigitAsBlocks(int digit, int x, int y, int blockSize, enum color pC);
 };
 #endif // __IO__
